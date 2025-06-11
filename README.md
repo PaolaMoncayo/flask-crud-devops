@@ -39,9 +39,17 @@ pip install -r requirements.txt
 
 ### Configurar variables de entorno
 
-```bash
-cp .env.example .env
-# Edita el archivo .env con tus configuraciones personales
+Crea un archivo `.env` en la raíz del proyecto basado en el siguiente ejemplo:
+
+```env
+DB_HOST=localhost
+DB_PORT=3306
+DB_USER=usuario
+DB_PASSWORD=contraseña
+DB_NAME=nombre_base_datos
+
+FLASK_ENV=development
+SECRET_KEY=tu_clave_secreta
 ```
 
 ---
@@ -58,9 +66,11 @@ git config --global user.email "tuemail@ejemplo.com"
 ### 2. Crear ramas principales
 
 ```bash
+git checkout main
+git pull origin main
 git checkout -b develop
 git push origin develop
-
+git checkout main
 git checkout -b test
 git push origin test
 ```
@@ -171,7 +181,30 @@ jobs:
 
 ---
 
-## 5. Comunicación y Colaboración
+## 5. Ejecución y Evidencias
+
+### App Flask corriendo
+
+![App Flask en ejecución](docs/img/flask-app-running.png)
+
+### Notificación de Slack funcionando
+
+![Notificación Slack](docs/img/slack-notification.png)
+
+### Commits en ramas de pruebas
+
+- **Rama develop:**
+  ![Commits en develop](docs/img/commits-develop.png)
+- **Rama test:**
+  ![Commits en test](docs/img/commits-test.png)
+
+### Ejecución de tests
+
+![Tests ejecutándose](docs/img/tests-running.png)
+
+---
+
+## 6. Comunicación y Colaboración
 
 - **GitHub Discussions** para temas técnicos.
 - **WhatsApp/Telegram** para comunicación rápida.
@@ -180,7 +213,7 @@ jobs:
 
 ---
 
-## 6. Reflexión Intercultural
+## 7. Reflexión Intercultural
 
 ### Resolución de Conflictos
 
@@ -206,23 +239,39 @@ jobs:
 
 ---
 
-## 7. Contribuidores
+## 8. Contribuidores
 
 - Paola Moncayo [Colombia]
 - [Agrega aquí los nombres y países de los demás miembros]
 
 ---
 
-## 8. Licencia
+## 9. Licencia
 
 MIT
 
 ---
 
-## 9. Recursos útiles
+## 10. Recursos útiles
 
 - [Documentación oficial de Flask](https://flask.palletsprojects.com/)
 - [Documentación de GitHub Actions](https://docs.github.com/en/actions)
 - [Guía de buenas prácticas de Git](https://www.atlassian.com/git/tutorials/comparing-workflows)
+
+---
+
+## 11. Estructura de carpetas para imágenes
+
+```
+flask-crud-devops/
+│
+├── docs/
+│   └── img/
+│       ├── flask-app-running.png
+│       ├── slack-notification.png
+│       ├── commits-develop.png
+│       ├── commits-test.png
+│       └── tests-running.png
+```
 
 ---
