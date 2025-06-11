@@ -206,10 +206,8 @@ jobs:
 
 ## 6. Comunicación y Colaboración
 
-- **GitHub Discussions** para temas técnicos.
 - **WhatsApp/Telegram** para comunicación rápida.
 - **Google Docs** para documentación compartida.
-- **Reuniones semanales** para sincronización.
 
 ---
 
@@ -218,12 +216,11 @@ jobs:
 ### Resolución de Conflictos
 
 - Usamos herramientas visuales de merge (VSCode, GitHub).
-- Antes de resolver un conflicto, nos comunicamos por WhatsApp o GitHub Discussions para entender el contexto.
-- Documentamos las decisiones importantes en los PRs y en Google Docs.
+- Antes de resolver un conflicto, nos comunicamos por WhatsApp para entender el contexto.
+- Documentamos las decisiones importantes en Google Docs.
 
 ### Herramientas de Comunicación
 
-- GitHub Discussions para temas técnicos y dudas.
 - WhatsApp/Telegram para avisos urgentes o coordinación rápida.
 - Google Docs para actas de reuniones y documentación de decisiones.
 
