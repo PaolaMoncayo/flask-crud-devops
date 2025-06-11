@@ -1,0 +1,11 @@
+setup.py
+app/__init__.py
+app/config.py
+app/models.py
+app/routes.py
+crud_app.egg-info/PKG-INFO
+crud_app.egg-info/SOURCES.txt
+crud_app.egg-info/dependency_links.txt
+crud_app.egg-info/requires.txt
+crud_app.egg-info/top_level.txt
+tests/test_api.py

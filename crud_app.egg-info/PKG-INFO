@@ -1,0 +1,11 @@
+Metadata-Version: 2.4
+Name: crud-app
+Version: 0.1
+Requires-Dist: flask
+Requires-Dist: flask-sqlalchemy
+Requires-Dist: flask-migrate
+Requires-Dist: flask-cors
+Requires-Dist: python-dotenv
+Requires-Dist: pytest
+Requires-Dist: pytest-cov
+Dynamic: requires-dist
