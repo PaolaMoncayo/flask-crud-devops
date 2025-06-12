@@ -1,195 +1,109 @@
-# Proyecto CRUD - Colaboración Internacional
+# CRUD de Productos y Categorías
 
-Este proyecto implementa un sistema CRUD (Create, Read, Update, Delete) utilizando Flask y MySQL, con un enfoque en colaboración internacional y desarrollo distribuido.
-
----
-
-## 1. Estructura del Proyecto
-
-- `main`: Rama principal, solo integraciones validadas.
-- `develop`: Rama para nuevas funcionalidades.
-- `test`: Rama para pruebas y validación.
+Este es un sistema CRUD simple para gestionar productos y categorías, implementado **sin el uso de frameworks**.
 
 ---
 
-## 2. Configuración del Entorno
+## Estructura del Proyecto
 
-### Clonar el repositorio
-
-```bash
-git clone https://github.com/PaolaMoncayo/flask-crud-devops.git
-cd flask-crud-devops
 ```
-
-### Crear y activar entorno virtual
-
-```bash
-python -m venv venv
-# En Windows:
-venv\Scripts\activate
-# En Linux/Mac:
-source venv/bin/activate
-```
-
-### Instalar dependencias
-
-```bash
-pip install -r requirements.txt
-```
-
-### Configurar variables de entorno
-
-Crea un archivo `.env` en la raíz del proyecto basado en el siguiente ejemplo:
-
-```env
-DB_HOST=localhost
-DB_PORT=3306
-DB_USER=usuario
-DB_PASSWORD=contraseña
-DB_NAME=nombre_base_datos
-
-FLASK_ENV=development
-SECRET_KEY=tu_clave_secreta
+.
+├── database.py      # Manejo de la base de datos SQLite
+├── server.py        # Servidor HTTP básico
+├── templates/       # Plantillas HTML
+│   └── index.html   # Interfaz de usuario
+├── tests/           # Pruebas automáticas
+├── docs/
+│   └── img/         # Imágenes de evidencia
+├── requirements.txt # Dependencias del proyecto
+├── .env.example     # Ejemplo de variables de entorno
+└── README.md
 ```
 
 ---
 
-## 3. Flujo de Trabajo con Git y GitHub
+## Requisitos
 
-### 1. Configurar usuario de Git
-
-```bash
-git config --global user.name "Tu Nombre"
-git config --global user.email "tuemail@ejemplo.com"
-```
-
-### 2. Crear ramas principales
-
-```bash
-git checkout main
-git pull origin main
-git checkout -b develop
-git push origin develop
-git checkout main
-git checkout -b test
-git push origin test
-```
-
-### 3. Crear una rama para tu feature (desde develop)
-
-```bash
-git checkout develop
-git pull origin develop
-git checkout -b feat/login
-```
-
-### 4. Hacer cambios y commit
-
-```bash
-git add .
-git commit -m "feat: Added login feature [México]"
-```
-
-### 5. Sincronizar cambios antes de subir
-
-```bash
-git pull origin develop
-```
-
-### 6. Subir tu rama al repositorio
-
-```bash
-git push origin feat/login
-```
-
-### 7. Crear Pull Request (PR)
-
-- Ve a GitHub y crea un PR de tu rama hacia `develop`.
-- Etiqueta a tus compañeros para revisión (simulando husos horarios).
-
-### 8. Revisar y resolver conflictos
-
-- Si hay conflictos, comunícate con tu equipo y resuélvelos usando herramientas visuales de merge (VSCode, GitHub, etc).
-- Documenta las decisiones importantes en el PR.
+- Python 3.6 o superior
+- SQLite3
 
 ---
 
-## 4. Integración DevOps
+## Instalación
 
-### GitHub Actions
+1. Clonar el repositorio:
+   ```bash
+   git clone <url-del-repositorio>
+   cd <nombre-del-directorio>
+   ```
 
-- Al hacer push o PR a `main`, `develop` o `test`, se ejecutan los tests automáticamente.
-- Si un build falla, se envía una notificación a Slack.
+2. Crear un entorno virtual (opcional pero recomendado):
+   ```bash
+   python -m venv venv
+   # En Windows:
+   venv\Scripts\activate
+   # En Linux/Mac:
+   source venv/bin/activate
+   ```
 
-#### Ejemplo de archivo `.github/workflows/tests.yml`:
+3. Instalar dependencias:
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-```yaml
-name: Tests
-
-on:
-  push:
-    branches: [ main, develop, test ]
-  pull_request:
-    branches: [ main, develop, test ]
-
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    services:
-      mysql:
-        image: mysql:8.0
-        env:
-          MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: test_db
-        ports:
-          - 3306:3306
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
-
-    steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.13'
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
-        pip install pytest pytest-cov
-    - name: Run tests
-      env:
-        FLASK_APP: app.py
-        FLASK_ENV: testing
-        DATABASE_URL: mysql://root:root@localhost:3306/test_db
-      run: |
-        pytest tests/ --cov=app --cov-report=xml
-    - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v2
-      with:
-        file: ./coverage.xml
-        fail_ci_if_error: true
-    - name: Notify on failure
-      if: failure()
-      uses: 8398a7/action-slack@v3
-      with:
-        status: ${{ job.status }}
-        fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
-      env:
-        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-      continue-on-error: true
-```
+4. Configurar variables de entorno:
+   Copia el archivo `.env.example` a `.env` y edítalo según tu configuración.
 
 ---
 
-## 5. Ejecución y Evidencias
+## Uso
 
-### App Flask corriendo
+1. Iniciar el servidor:
+   ```bash
+   python server.py
+   ```
 
-![App Flask en ejecución](docs/img/flask-app-running.png)
+2. Abrir en el navegador:
+   ```
+   http://localhost:8000
+   ```
 
-### Notificación de Slack funcionando
+---
 
-![Notificación Slack](docs/img/slack-notification.png)
+## Funcionalidades
+
+- **Gestión de Categorías:**
+  - Crear categorías
+  - Ver lista de categorías
+  - Eliminar categorías
+
+- **Gestión de Productos:**
+  - Crear productos
+  - Ver lista de productos
+  - Eliminar productos
+  - Asociar productos a categorías
+
+---
+
+## API Endpoints
+
+### Categorías
+- `GET /api/categories` - Obtener todas las categorías
+- `POST /api/categories` - Crear una nueva categoría
+- `DELETE /api/categories/{id}` - Eliminar una categoría
+
+### Productos
+- `GET /api/products` - Obtener todos los productos
+- `POST /api/products` - Crear un nuevo producto
+- `DELETE /api/products/{id}` - Eliminar un producto
+
+---
+
+## Evidencias Visuales
+
+### Interfaz en ejecución
+
+![App corriendo](docs/img/app-running.png)
 
 ### Commits en ramas de pruebas
 
@@ -202,9 +116,59 @@ jobs:
 
 ![Tests ejecutándose](docs/img/tests-running.png)
 
+### Notificación de Slack funcionando
+
+![Notificación Slack](docs/img/slack-notification.png)
+
 ---
 
-## 6. Comunicación y Colaboración
+## Flujo de trabajo con Git y GitHub
+
+1. Configura tu usuario de Git:
+   ```bash
+   git config --global user.name "Tu Nombre"
+   git config --global user.email "tuemail@ejemplo.com"
+   ```
+
+2. Crea ramas principales:
+   ```bash
+   git checkout main
+   git pull origin main
+   git checkout -b develop
+   git push origin develop
+   git checkout main
+   git checkout -b test
+   git push origin test
+   ```
+
+3. Crea una rama para tu feature (desde develop):
+   ```bash
+   git checkout develop
+   git pull origin develop
+   git checkout -b feature/nueva-funcionalidad
+   ```
+
+4. Haz cambios y commit:
+   ```bash
+   git add .
+   git commit -m "feat: Nueva funcionalidad [País]"
+   ```
+
+5. Sincroniza cambios antes de subir:
+   ```bash
+   git pull origin develop
+   ```
+
+6. Sube tu rama al repositorio:
+   ```bash
+   git push origin feature/nueva-funcionalidad
+   ```
+
+7. Crea un Pull Request (PR) hacia `develop` y etiqueta a tus compañeros para revisión.
+
+---
+
+## Comunicación y Colaboración
 
 - **GitHub Discussions** para temas técnicos.
 - **WhatsApp/Telegram** para comunicación rápida.
@@ -213,61 +177,33 @@ jobs:
 
 ---
 
-## 7. Reflexión Intercultural
+## Reflexión Intercultural
 
-### Resolución de Conflictos
-
-- Usamos herramientas visuales de merge (VSCode, GitHub).
-- Antes de resolver un conflicto, nos comunicamos por WhatsApp o GitHub Discussions para entender el contexto.
-- Documentamos las decisiones importantes en los PRs y en Google Docs.
-
-### Herramientas de Comunicación
-
-- GitHub Discussions para temas técnicos y dudas.
-- WhatsApp/Telegram para avisos urgentes o coordinación rápida.
-- Google Docs para actas de reuniones y documentación de decisiones.
-
-### Consideraciones de Husos Horarios
-
-- Documentamos los horarios de trabajo de cada miembro en Google Docs.
-- Usamos herramientas asíncronas (GitHub, Google Docs) para que todos puedan avanzar a su ritmo.
-- Establecemos ventanas de tiempo para reuniones donde todos puedan coincidir.
-
-### Análisis de desafíos interculturales y técnicos
-
-> Trabajar en un equipo distribuido internacionalmente nos obligó a ser muy claros en la comunicación y a documentar todo. Los conflictos de merge se resolvieron con diálogo y herramientas visuales, priorizando siempre la comprensión mutua. La diferencia de husos horarios nos llevó a planificar tareas asíncronas y a respetar los tiempos de respuesta de cada miembro. El uso de GitHub Actions y Slack permitió que todos estuviéramos informados sobre el estado del proyecto, sin importar la hora o el lugar. La colaboración intercultural enriqueció el proyecto, aportando diferentes perspectivas y soluciones creativas a los problemas técnicos y organizativos.
+> Trabajar en un equipo distribuido internacionalmente nos obligó a ser muy claros en la comunicación y a documentar todo. Los conflictos de merge se resolvieron con diálogo y herramientas visuales, priorizando siempre la comprensión mutua. La diferencia de husos horarios nos llevó a planificar tareas asíncronas y a respetar los tiempos de respuesta de cada miembro. La colaboración intercultural enriqueció el proyecto, aportando diferentes perspectivas y soluciones creativas a los problemas técnicos y organizativos.
 
 ---
 
-## 8. Contribuidores
+## Contribuidores
 
 - Paola Moncayo [Colombia]
 - [Agrega aquí los nombres y países de los demás miembros]
 
 ---
 
-## 9. Licencia
+## Licencia
 
 MIT
 
 ---
 
-## 10. Recursos útiles
-
-- [Documentación oficial de Flask](https://flask.palletsprojects.com/)
-- [Documentación de GitHub Actions](https://docs.github.com/en/actions)
-- [Guía de buenas prácticas de Git](https://www.atlassian.com/git/tutorials/comparing-workflows)
-
----
-
-## 11. Estructura de carpetas para imágenes
+## Estructura de carpetas para imágenes
 
 ```
 flask-crud-devops/
 │
 ├── docs/
 │   └── img/
-│       ├── flask-app-running.png
+│       ├── app-running.png
 │       ├── slack-notification.png
 │       ├── commits-develop.png
 │       ├── commits-test.png
@@ -275,3 +211,17 @@ flask-crud-devops/
 ```
 
 ---
+
+## .env.example
+
+```env
+# Configuración de la base de datos
+DB_HOST=localhost
+DB_PORT=3306
+DB_USER=usuario
+DB_PASSWORD=contraseña
+DB_NAME=nombre_base_datos
+
+# Otros (si usas servicios externos)
+# API_KEY=tu_api_key
+``` 

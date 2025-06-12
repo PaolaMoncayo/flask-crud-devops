@@ -1,0 +1,6 @@
+Nombre: Paola Moncayo
+Universidad: Universidad de las Fuerzas Armadas ESPE
+Carrera: Ingeniería en Software
+Materia: Interculturalidad
+Título del Proyecto: Sistema CRUD con Flask
+Enlace de GitHub: https://github.com/PaolaMoncayo/flask-crud-devops.git

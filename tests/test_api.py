@@ -1,170 +1,172 @@
-import json
 import pytest
-from app.models import Category, Product
+import json
+from http.server import HTTPServer
+from server import RequestHandler
+import threading
+import requests
+import time
 
-# Pruebas de Categorías
-def test_list_categories(client, sample_category):
-    """Prueba obtener lista de categorías"""
-    res = client.get("/api/categories")
-    assert res.status_code == 200
-    data = res.get_json()
-    assert isinstance(data, list)
-    assert len(data) >= 2  # Deberían existir al menos las categorías de prueba
+@pytest.fixture(scope="function")
+def server():
+    """Fixture que proporciona un servidor HTTP para pruebas"""
+    # Iniciar el servidor en un hilo separado
+    server = HTTPServer(('localhost', 8000), RequestHandler)
+    thread = threading.Thread(target=server.serve_forever)
+    thread.daemon = True
+    thread.start()
+    
+    # Dar tiempo para que el servidor inicie
+    time.sleep(1)
+    
+    yield server
+    
+    # Limpiar
+    server.shutdown()
+    server.server_close()
 
-def test_create_category(client):
-    """Prueba crear una nueva categoría"""
-    res = client.post("/api/categories", json={
-        "name": "TestCat",
-        "description": "Descripción de prueba"
-    })
-    assert res.status_code == 201
-    data = res.get_json()
-    assert data["name"] == "TestCat"
-    assert data["description"] == "Descripción de prueba"
-    assert "id" in data
+def test_get_categories(server):
+    """Prueba obtener todas las categorías"""
+    # Crear una categoría primero
+    response = requests.post(
+        'http://localhost:8000/api/categories',
+        json={'name': 'Electrónicos', 'description': 'Productos electrónicos'}
+    )
+    assert response.status_code == 201
+    
+    # Obtener categorías
+    response = requests.get('http://localhost:8000/api/categories')
+    assert response.status_code == 200
+    categories = response.json()
+    assert len(categories) == 1
+    assert categories[0]['name'] == 'Electrónicos'
 
-def test_get_category(client, sample_category):
-    """Prueba obtener una categoría específica"""
-    res = client.get(f"/api/categories/{sample_category.id}")
-    assert res.status_code == 200
-    data = res.get_json()
-    assert data["name"] == sample_category.name
-    assert data["description"] == sample_category.description
+def test_create_category(server):
+    """Prueba crear una categoría"""
+    response = requests.post(
+        'http://localhost:8000/api/categories',
+        json={'name': 'Ropa', 'description': 'Ropa y accesorios'}
+    )
+    assert response.status_code == 201
+    data = response.json()
+    assert data['message'] == 'Categoría creada'
 
-def test_update_category(client):
-    """Prueba actualizar una categoría"""
-    # Crear primero
-    res = client.post("/api/categories", json={"name": "CatUp", "description": "desc"})
-    cat_id = res.get_json()["id"]
-    # Actualizar
-    res = client.put(f"/api/categories/{cat_id}", json={"name": "CatUpdated", "description": "Nueva desc"})
-    assert res.status_code == 200
-    data = res.get_json()
-    assert data["name"] == "CatUpdated"
-    assert data["description"] == "Nueva desc"
-
-def test_delete_category(client):
+def test_delete_category(server):
     """Prueba eliminar una categoría"""
-    res = client.post("/api/categories", json={"name": "CatDel", "description": "desc"})
-    cat_id = res.get_json()["id"]
-    res = client.delete(f"/api/categories/{cat_id}")
-    assert res.status_code == 204
-    # Ya no debe existir
-    res = client.get(f"/api/categories/{cat_id}")
-    assert res.status_code == 404
+    # Crear una categoría primero
+    response = requests.post(
+        'http://localhost:8000/api/categories',
+        json={'name': 'Test Delete', 'description': 'Para eliminar'}
+    )
+    assert response.status_code == 201
+    
+    # Obtener el ID de la categoría
+    response = requests.get('http://localhost:8000/api/categories')
+    categories = response.json()
+    category_id = categories[0]['id']
+    
+    # Eliminar la categoría
+    response = requests.delete(f'http://localhost:8000/api/categories/{category_id}')
+    assert response.status_code == 200
+    data = response.json()
+    assert data['message'] == 'Categoría eliminada'
 
-# Pruebas de Productos
-def test_list_products(client):
-    """Prueba obtener lista de productos"""
-    res = client.get("/api/products")
-    assert res.status_code == 200
-    data = res.get_json()
-    assert isinstance(data, list)
+def test_get_products(server):
+    """Prueba obtener todos los productos"""
+    # Crear una categoría primero
+    response = requests.post(
+        'http://localhost:8000/api/categories',
+        json={'name': 'Electrónicos', 'description': 'Productos electrónicos'}
+    )
+    assert response.status_code == 201
+    
+    # Obtener el ID de la categoría
+    response = requests.get('http://localhost:8000/api/categories')
+    categories = response.json()
+    category_id = categories[0]['id']
+    
+    # Crear un producto
+    response = requests.post(
+        'http://localhost:8000/api/products',
+        json={
+            'name': 'Laptop',
+            'description': 'Laptop HP',
+            'price': 999.99,
+            'stock': 10,
+            'category_id': category_id
+        }
+    )
+    assert response.status_code == 201
+    
+    # Obtener productos
+    response = requests.get('http://localhost:8000/api/products')
+    assert response.status_code == 200
+    products = response.json()
+    assert len(products) == 1
+    assert products[0]['name'] == 'Laptop'
 
-def test_create_product(client):
-    """Prueba crear un nuevo producto"""
-    # Crear categoría primero
-    res = client.post("/api/categories", json={"name": "CatProd", "description": "desc"})
-    cat_id = res.get_json()["id"]
-    # Crear producto
-    prod_data = {
-        "sku": "SKU001",
-        "name": "Producto Test",
-        "description": "Desc prod",
-        "price": 10.5,
-        "stock": 5,
-        "category_id": cat_id
-    }
-    res = client.post("/api/products", json=prod_data)
-    assert res.status_code == 201
-    data = res.get_json()
-    assert data["sku"] == "SKU001"
-    assert data["name"] == "Producto Test"
-    assert data["stock"] == 5
-    assert data["category"]["id"] == cat_id
+def test_create_product(server):
+    """Prueba crear un producto"""
+    # Crear una categoría primero
+    response = requests.post(
+        'http://localhost:8000/api/categories',
+        json={'name': 'Electrónicos', 'description': 'Productos electrónicos'}
+    )
+    assert response.status_code == 201
+    
+    # Obtener el ID de la categoría
+    response = requests.get('http://localhost:8000/api/categories')
+    categories = response.json()
+    category_id = categories[0]['id']
+    
+    # Crear un producto
+    response = requests.post(
+        'http://localhost:8000/api/products',
+        json={
+            'name': 'Mouse',
+            'description': 'Mouse inalámbrico',
+            'price': 29.99,
+            'stock': 20,
+            'category_id': category_id
+        }
+    )
+    assert response.status_code == 201
+    data = response.json()
+    assert data['message'] == 'Producto creado'
 
-def test_get_product(client, sample_product):
-    """Prueba obtener un producto específico"""
-    res = client.get(f"/api/products/{sample_product.id}")
-    assert res.status_code == 200
-    data = res.get_json()
-    assert data["sku"] == sample_product.sku
-    assert data["name"] == sample_product.name
-    assert float(data["price"]) == float(sample_product.price)
-
-def test_update_product(client):
-    """Prueba actualizar un producto"""
-    # Crear categoría y producto
-    res = client.post("/api/categories", json={"name": "CatUpProd", "description": "desc"})
-    cat_id = res.get_json()["id"]
-    prod_data = {
-        "sku": "SKU002",
-        "name": "ProdUp",
-        "description": "Desc",
-        "price": 20.0,
-        "stock": 2,
-        "category_id": cat_id
-    }
-    res = client.post("/api/products", json=prod_data)
-    prod_id = res.get_json()["id"]
-    # Actualizar
-    res = client.put(f"/api/products/{prod_id}", json={
-        "sku": "SKU002",
-        "name": "ProdUpdated",
-        "description": "Nueva desc",
-        "price": 25.0,
-        "stock": 10,
-        "category_id": cat_id
-    })
-    assert res.status_code == 200
-    data = res.get_json()
-    assert data["name"] == "ProdUpdated"
-    assert data["stock"] == 10
-
-def test_delete_product(client):
+def test_delete_product(server):
     """Prueba eliminar un producto"""
-    res = client.post("/api/categories", json={"name": "CatDelProd", "description": "desc"})
-    cat_id = res.get_json()["id"]
-    prod_data = {
-        "sku": "SKU003",
-        "name": "ProdDel",
-        "description": "Desc",
-        "price": 30.0,
-        "stock": 1,
-        "category_id": cat_id
-    }
-    res = client.post("/api/products", json=prod_data)
-    prod_id = res.get_json()["id"]
-    res = client.delete(f"/api/products/{prod_id}")
-    assert res.status_code == 204
-    # Ya no debe existir
-    res = client.get(f"/api/products/{prod_id}")
-    assert res.status_code == 404
-
-# Pruebas de validación
-def test_create_product_invalid_data(client, sample_category):
-    """Prueba crear producto con datos inválidos"""
-    # Falta el campo sku
-    res = client.post("/api/products", json={
-        "name": "Producto Inválido",
-        "price": 99.99,
-        "stock": 10,
-        "category_id": sample_category.id
-    })
-    assert res.status_code == 400
-
-def test_create_category_invalid_data(client):
-    """Prueba crear categoría con datos inválidos"""
-    # Falta el campo name
-    res = client.post("/api/categories", json={
-        "description": "Descripción sin nombre"
-    })
-    assert res.status_code == 400
-
-# Pruebas de relaciones
-def test_category_product_relationship(client, sample_category, sample_product):
-    """Prueba la relación entre categoría y productos"""
-    res = client.get(f"/api/categories/{sample_category.id}")
-    assert res.status_code == 200
-    data = res.get_json()
-    assert data["product_count"] == 1  # Debería tener un producto
+    # Crear una categoría primero
+    response = requests.post(
+        'http://localhost:8000/api/categories',
+        json={'name': 'Electrónicos', 'description': 'Productos electrónicos'}
+    )
+    assert response.status_code == 201
+    
+    # Obtener el ID de la categoría
+    response = requests.get('http://localhost:8000/api/categories')
+    categories = response.json()
+    category_id = categories[0]['id']
+    
+    # Crear un producto
+    response = requests.post(
+        'http://localhost:8000/api/products',
+        json={
+            'name': 'Test Delete',
+            'description': 'Para eliminar',
+            'price': 99.99,
+            'stock': 5,
+            'category_id': category_id
+        }
+    )
+    assert response.status_code == 201
+    
+    # Obtener el ID del producto
+    response = requests.get('http://localhost:8000/api/products')
+    products = response.json()
+    product_id = products[0]['id']
+    
+    # Eliminar el producto
+    response = requests.delete(f'http://localhost:8000/api/products/{product_id}')
+    assert response.status_code == 200
+    data = response.json()
+    assert data['message'] == 'Producto eliminado' 
