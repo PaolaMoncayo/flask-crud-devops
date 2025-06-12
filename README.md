@@ -170,16 +170,33 @@ Este es un sistema CRUD simple para gestionar productos y categorías, implement
 
 ## Comunicación y Colaboración
 
-- **GitHub Discussions** para temas técnicos.
 - **WhatsApp/Telegram** para comunicación rápida.
 - **Google Docs** para documentación compartida.
-- **Reuniones semanales** para sincronización.
 
 ---
 
 ## Reflexión Intercultural
 
-> Trabajar en un equipo distribuido internacionalmente nos obligó a ser muy claros en la comunicación y a documentar todo. Los conflictos de merge se resolvieron con diálogo y herramientas visuales, priorizando siempre la comprensión mutua. La diferencia de husos horarios nos llevó a planificar tareas asíncronas y a respetar los tiempos de respuesta de cada miembro. La colaboración intercultural enriqueció el proyecto, aportando diferentes perspectivas y soluciones creativas a los problemas técnicos y organizativos.
+### Resolución de Conflictos
+
+- Usamos herramientas visuales de merge (VSCode, GitHub).
+- Antes de resolver un conflicto, nos comunicamos por WhatsApp para entender el contexto.
+- Documentamos las decisiones importantes en Google Docs.
+
+### Herramientas de Comunicación
+
+- WhatsApp/Telegram para avisos urgentes o coordinación rápida.
+- Google Docs para actas de reuniones y documentación de decisiones.
+
+### Consideraciones de Husos Horarios
+
+- Documentamos los horarios de trabajo de cada miembro en Google Docs.
+- Usamos herramientas asíncronas (GitHub, Google Docs) para que todos puedan avanzar a su ritmo.
+- Establecemos ventanas de tiempo para reuniones donde todos puedan coincidir.
+
+### Análisis de desafíos interculturales y técnicos
+
+> Trabajar en un equipo distribuido internacionalmente nos obligó a ser muy claros en la comunicación y a documentar todo. Los conflictos de merge se resolvieron con diálogo y herramientas visuales, priorizando siempre la comprensión mutua. La diferencia de husos horarios nos llevó a planificar tareas asíncronas y a respetar los tiempos de respuesta de cada miembro. El uso de GitHub Actions y Slack permitió que todos estuviéramos informados sobre el estado del proyecto, sin importar la hora o el lugar. La colaboración intercultural enriqueció el proyecto, aportando diferentes perspectivas y soluciones creativas a los problemas técnicos y organizativos.
 
 ---
 
