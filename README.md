@@ -103,7 +103,7 @@ Este es un sistema CRUD simple para gestionar productos y categorías, implement
 
 ### Interfaz en ejecución
 
-![App corriendo](docs/img/app-running-copia.png)
+![App corriendo](docs/img/app-running.png)
 
 ### Commits en ramas de pruebas
 
