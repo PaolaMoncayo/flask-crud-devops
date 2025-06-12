@@ -25,7 +25,7 @@ Este es un sistema CRUD simple para gestionar productos y categorías, implement
 ## Requisitos
 
 - Python 3.6 o superior
-- SQLite3
+- MySqlWorkBench
 
 ---
 
@@ -90,11 +90,13 @@ Este es un sistema CRUD simple para gestionar productos y categorías, implement
 ### Categorías
 - `GET /api/categories` - Obtener todas las categorías
 - `POST /api/categories` - Crear una nueva categoría
+- `PUT /api/categories` - Actualizar una nueva categoría
 - `DELETE /api/categories/{id}` - Eliminar una categoría
 
 ### Productos
 - `GET /api/products` - Obtener todos los productos
 - `POST /api/products` - Crear un nuevo producto
+- `PUT /api/products` - Actualizar un nuevo producto
 - `DELETE /api/products/{id}` - Eliminar un producto
 
 ---
@@ -203,13 +205,13 @@ Este es un sistema CRUD simple para gestionar productos y categorías, implement
 ## Contribuidores
 
 - Paola Moncayo [Colombia]
-- [Agrega aquí los nombres y países de los demás miembros]
+- Próximos Miembros Internacionales
 
 ---
 
 ## Licencia
 
-MIT
+ESPE
 
 ---
 
